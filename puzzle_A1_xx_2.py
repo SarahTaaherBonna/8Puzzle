@@ -109,19 +109,26 @@ class Puzzle(object):
 
     def generateFrontierNode(self, node):
         possibleMoves = self.findPossibleMoves(node.state)
+        frontierNodes = list()
         for move in possibleMoves:
             newState = self.getNextState(node.state, move)
+            newActionHistory = node.action_history[:]
+            newActionHistory.append(move)
+            newNode = Node(newState, newActionHistory, len(newActionHistory), self.heuristicFunction(newState))
+            frontierNodes.append(newNode)
+        return frontierNodes
+
 
     def getNextState(self, state, move):
         indexOfZero = self.getIndex(0, state)
         nextState = copy.deepcopy(state)
-        if(move == moveStr.RIGHT):
+        if(move == moveStr["RIGHT"]):
             nextState[indexOfZero[0]][indexOfZero[1]] = nextState[indexOfZero[0]][indexOfZero[1] - 1]
             nextState[indexOfZero[0]][indexOfZero[1] - 1] = 0
-        elif(move == moveStr.LEFT):
+        elif(move == moveStr["LEFT"]):
             nextState[indexOfZero[0]][indexOfZero[1]] = nextState[indexOfZero[0]][indexOfZero[1] + 1]
             nextState[indexOfZero[0]][indexOfZero[1] + 1] = 0
-        elif(move == moveStr.DOWN):
+        elif(move == moveStr["DOWN"]):
             nextState[indexOfZero[0]][indexOfZero[1]] = nextState[indexOfZero[0] - 1][indexOfZero[1]]
             nextState[indexOfZero[0] - 1][indexOfZero[1]] = 0
         else:
