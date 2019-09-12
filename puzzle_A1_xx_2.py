@@ -28,7 +28,7 @@ class Puzzle(object):
         startNode = Node(init_state, list(), 0, self.heuristicFunction(init_state))
         self.priorityQueue.push(startNode)
         while True:
-            node = self.pop()
+            node = self.priorityQueue.pop()
             if self.isGoalNode(node):
                 break
             new_frontier_nodes = self.generateFrontierNode(node)
