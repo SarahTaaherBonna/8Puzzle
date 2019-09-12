@@ -80,12 +80,16 @@ class Puzzle(object):
         moves = list()
         zeroRow = 0
         zeroCol = 0
+<<<<<<< HEAD
 
+=======
+>>>>>>> own
         for i in range(3):
             for j in range(3):
                 if (state[i][j] == 0):
                     zeroRow = i
                     zeroCol = j
+<<<<<<< HEAD
 
         if (zeroRow == 0):
             moves.append(moveStr["UP"])
@@ -104,22 +108,45 @@ class Puzzle(object):
             moves.append(moveStr["RIGHT"])
 
         return moves
+=======
+        if (zer)
+>>>>>>> own
 
     def isGoalNode(self, node):
         return self.calcNumMisplacedTiles(node.state) == 0
 
     def generateFrontierNode(self, node):
+<<<<<<< HEAD
         possibleMoves = self.findPossibleMoves(node.state)
+=======
+        possibleMoves = findPossibleMoves(node.state)
+>>>>>>> own
         for move in possibleMoves:
             newState = self.getNextState(node.state, move)
 
     def getNextState(self, state, move):
         indexOfZero = self.getIndex(0, state)
         nextState = copy.deepcopy(state)
+<<<<<<< HEAD
         
         #nextState[indexOfZero[0]][indexOfZero[1]] = 
         
 
+=======
+        if(move == moveStr.RIGHT):
+            nextState[indexOfZero[0]][indexOfZero[1]] = nextState[indexOfZero[0]][indexOfZero[1] - 1]
+            nextState[indexOfZero[0]][indexOfZero[1] - 1] = 0
+        elif(move == moveStr.LEFT):
+            nextState[indexOfZero[0]][indexOfZero[1]] = nextState[indexOfZero[0]][indexOfZero[1] + 1]
+            nextState[indexOfZero[0]][indexOfZero[1] + 1] = 0
+        elif(move == moveStr.DOWN):
+            nextState[indexOfZero[0]][indexOfZero[1]] = nextState[indexOfZero[0] - 1][indexOfZero[1]]
+            nextState[indexOfZero[0] - 1][indexOfZero[1]] = 0
+        else:
+            nextState[indexOfZero[0]][indexOfZero[1]] = nextState[indexOfZero[0] + 1][indexOfZero[1]]
+            nextState[indexOfZero[0] + 1][indexOfZero[1]] = 0
+        return nextState
+>>>>>>> own
 
     # You may add more (helper) methods if necessary.
     # Note that our evaluation scripts only call the solve method.
