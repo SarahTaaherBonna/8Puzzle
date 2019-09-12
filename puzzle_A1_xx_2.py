@@ -1,6 +1,7 @@
 import os
 import sys
 import copy
+import heapq
 
 moveNum = {1:"RIGHT", 2:"LEFT", 3:"UP", 4:"DOWN"}
 moveStr = {"RIGHT":1, "LEFT":2, "UP":3, "DOWN":4}
@@ -20,19 +21,20 @@ class Puzzle(object):
         self.goal_state = goal_state
         self.actions = list()
         self.solvable = True
-        self.priorityQueue = list()
+        self.frontierNodes = heapq.heapify(list())
 
     def solve(self):
         # TODO: Write your code here
         # return: a list of actions like: ["UP", "DOWN"]
         startNode = Node(init_state, list(), 0, self.heuristicFunction(init_state))
-        self.priorityQueue.push(startNode)
+        heapq.heappush(self.frontierNodes, startNode)
         while True:
-            node = self.priorityQueue.pop()
+            node = heapq.heappop(self.frontierNodes)
             if self.isGoalNode(node):
                 break
             new_frontier_nodes = self.generateFrontierNode(node)
-            self.priorityQueue.pushAll(new_frontier_nodes)
+            for frontier_node in new_frontier_nodes:
+                heapq.heappush(self.frontierNodes, frontier_node)
         return node.action_history
             
     # h1 heuristic: number of misplaced tiles
