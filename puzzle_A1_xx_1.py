@@ -1,7 +1,7 @@
 import os
 import sys
 from collections import deque
-# import itertools
+import copy
 
 #Attributes of each tile (node)
 class NodeAttributes:
@@ -92,46 +92,46 @@ class Puzzle(object):
     #depending on the position passed from expanding the node.
     #Move accordingly and update the newNodeState list
     def move(self, nodeState, position):
-        # newNodeState = list(nodeState) #Copy nodeState list into newNodeState list, nodeState is node.state
-        i = nodeState.index(0) #Find the position of 0 in the list
+        newNodeState = copy.copy(nodeState) #Copy nodeState list into newNodeState list, nodeState is node.state
+        i = newNodeState.index(0) #Find the position of 0 in the list
 
         if position == 1:  #Up
             #if i is not found from 0 to 2 i.e. the top row, then can move up
             if i not in range(boardSide):
-                temp = nodeState[i - boardSide]
-                nodeState[i - boardSide] = nodeState[i]
-                nodeState[i] = temp
-                return nodeState
+                temp = newNodeState[i - boardSide]
+                newNodeState[i - boardSide] = newNodeState[i]
+                newNodeState[i] = temp
+                return newNodeState
             else:
                 return None
 
         elif position == 2:  #Down
             #if i is not found from 6 to 8, i.e. bottom row, then can move down
             if i not in range(boardLen - boardSide, boardLen):
-                temp = nodeState[i + boardSide]
-                nodeState[i + boardSide] = nodeState[i]
-                nodeState[i] = temp
-                return nodeState
+                temp = newNodeState[i + boardSide]
+                newNodeState[i + boardSide] = newNodeState[i]
+                newNodeState[i] = temp
+                return newNodeState
             else:
                 return None
 
         elif position == 3:  #Left 
             #i not equal to 0, 3, 6, i.e. the leftmost row, then can move left
             if i not in range(0, boardLen, boardSide):
-                temp = nodeState[i - 1]
-                nodeState[i - 1] = nodeState[i]
-                nodeState[i] = temp
-                return nodeState
+                temp = newNodeState[i - 1]
+                newNodeState[i - 1] = newNodeState[i]
+                newNodeState[i] = temp
+                return newNodeState
             else:
                 return None
 
         elif position == 4:  #Right
             #i not equal to 2, 5, 8, i.e. the rightmost row, then can move right
             if i in range(boardSide - 1, boardLen, boardSide):
-                temp = nodeState[i + 1]
-                nodeState[i + 1] = nodeState[i]
-                nodeState[i] = temp
-                return nodeState
+                temp = newNodeState[i + 1]
+                newNodeState[i + 1] = newNodeState[i]
+                newNodeState[i] = temp
+                return newNodeState
             else:
                 return None
 
