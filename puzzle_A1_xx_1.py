@@ -42,15 +42,15 @@ class Puzzle(object):
                 goalState.append(goal_state[i][j])
 
         # explored = set()
-        # neighbours = list()
-        explored = list()
+        explored = deque()
+        # explored = list()
         queue = deque([NodeAttributes(initialState, None, None)])
 
         while queue:
             node = queue.popleft() #Remove and return an element (node) from the left side of the deque
             if node not in explored:
-                explored.insert(0, node)
-            # explored.appendleft(node)
+                # explored.insert(0, node)
+                explored.appendleft(node)
             # explored.add(node)
 
             if node.state == goalState:
@@ -63,8 +63,8 @@ class Puzzle(object):
             for neighbour in neighbours:
                 if neighbour not in explored:
                     queue.append(neighbour)
-                    explored.insert(0, neighbour)
-                    # explored.appendleft(neighbour)
+                    # explored.insert(0, neighbour)
+                    explored.appendleft(neighbour)
                     # explored.add(neighbour)
                     
 
