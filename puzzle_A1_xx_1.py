@@ -38,8 +38,8 @@ class Puzzle(object):
         #because easier to deal with list than 2D array
         for i in range(boardSide):
             for j in range(boardSide):
-                initialState.insert(len(initialState), init_state[i][j])
-                goalState.insert(len(goalState), goal_state[i][j])
+                initialState.append(init_state[i][j])
+                goalState.append(goal_state[i][j])
 
         # explored = set()
         # neighbours = list()
@@ -48,8 +48,10 @@ class Puzzle(object):
 
         while queue:
             node = queue.popleft() #Remove and return an element (node) from the left side of the deque
+            if node not in explored:
+                explored.insert(0, node)
+            # explored.appendleft(node)
             # explored.add(node)
-            explored.insert(0, node)
 
             if node.state == goalState:
                 goalNode = node
@@ -61,8 +63,10 @@ class Puzzle(object):
             for neighbour in neighbours:
                 if neighbour not in explored:
                     queue.append(neighbour)
-                    # explored.add(neighbour)
                     explored.insert(0, neighbour)
+                    # explored.appendleft(neighbour)
+                    # explored.add(neighbour)
+                    
 
             if len(queue) > maxFrontierSize:
                 maxFrontierSize = len(queue)
@@ -88,46 +92,46 @@ class Puzzle(object):
     #depending on the position passed from expanding the node.
     #Move accordingly and update the newNodeState list
     def move(self, nodeState, position):
-        newNodeState = list(nodeState) #Copy nodeState list into newNodeState list, nodeState is node.state
-        i = newNodeState.index(0) #Find the position of 0 in the list
+        # newNodeState = list(nodeState) #Copy nodeState list into newNodeState list, nodeState is node.state
+        i = nodeState.index(0) #Find the position of 0 in the list
 
         if position == 1:  #Up
             #if i is not found from 0 to 2 i.e. the top row, then can move up
             if i not in range(boardSide):
-                temp = newNodeState[i - boardSide]
-                newNodeState[i - boardSide] = newNodeState[i]
-                newNodeState[i] = temp
-                return newNodeState
+                temp = nodeState[i - boardSide]
+                nodeState[i - boardSide] = nodeState[i]
+                nodeState[i] = temp
+                return nodeState
             else:
                 return None
 
         elif position == 2:  #Down
             #if i is not found from 6 to 8, i.e. bottom row, then can move down
             if i not in range(boardLen - boardSide, boardLen):
-                temp = newNodeState[i + boardSide]
-                newNodeState[i + boardSide] = newNodeState[i]
-                newNodeState[i] = temp
-                return newNodeState
+                temp = nodeState[i + boardSide]
+                nodeState[i + boardSide] = nodeState[i]
+                nodeState[i] = temp
+                return nodeState
             else:
                 return None
 
         elif position == 3:  #Left 
             #i not equal to 0, 3, 6, i.e. the leftmost row, then can move left
             if i not in range(0, boardLen, boardSide):
-                temp = newNodeState[i - 1]
-                newNodeState[i - 1] = newNodeState[i]
-                newNodeState[i] = temp
-                return newNodeState
+                temp = nodeState[i - 1]
+                nodeState[i - 1] = nodeState[i]
+                nodeState[i] = temp
+                return nodeState
             else:
                 return None
 
         elif position == 4:  #Right
             #i not equal to 2, 5, 8, i.e. the rightmost row, then can move right
             if i in range(boardSide - 1, boardLen, boardSide):
-                temp = newNodeState[i + 1]
-                newNodeState[i + 1] = newNodeState[i]
-                newNodeState[i] = temp
-                return newNodeState
+                temp = nodeState[i + 1]
+                nodeState[i + 1] = nodeState[i]
+                nodeState[i] = temp
+                return nodeState
             else:
                 return None
 
@@ -149,7 +153,7 @@ class Puzzle(object):
 
             actions.insert(0, movement) #insert the movement at the front of the actions list
 
-            if(actions.len() > 300): #if the number of actions goes more than 300, unsolvable
+            if(len(actions) > 300): #if the number of actions goes more than 300, unsolvable
                 actions.clear()
                 movement = "Unsolvable"
                 actions.insert(0, movement)
