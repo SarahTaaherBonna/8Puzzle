@@ -1,23 +1,29 @@
 import os
 import sys
 from collections import deque
-import itertools
-import math
+# import itertools
 
 #Attributes of each tile (node)
 class NodeAttributes:
     def __init__(self, state, parent, move):
-        self.state = state #Initially init_state
+        self.state = state #Initially initalState
         self.parent = parent #Initially None
         self.move = move #Initially None
+
+    def _eq_(self, other):
+        return self.state == other.state
+
+    def _lt_(self, other):
+        return self.state < other.state
 
 #Global variables to be used
 goalNode = NodeAttributes
 nodesGenerated = 0 #For report
 maxFrontierSize = 0 #For report
 initialState = list()
+goalState = list()
 boardSide = 3 #Number of elements in each row
-boardLen = 9
+boardLen = 9 #Total number of elements
 
 class Puzzle(object):
     def __init__(self, init_state, goal_state):
@@ -33,8 +39,10 @@ class Puzzle(object):
         for i in range(boardSide):
             for j in range(boardSide):
                 initialState.insert(len(initialState), init_state[i][j])
+                goalState.insert(len(goalState), goal_state[i][j])
 
         # explored = set()
+        # neighbours = list()
         explored = list()
         queue = deque([NodeAttributes(initialState, None, None)])
 
@@ -43,7 +51,7 @@ class Puzzle(object):
             # explored.add(node)
             explored.insert(0, node)
 
-            if node.state == goal_state:
+            if node.state == goalState:
                 goalNode = node
                 return queue
 
@@ -80,46 +88,46 @@ class Puzzle(object):
     #depending on the position passed from expanding the node.
     #Move accordingly and update the newNodeState list
     def move(self, nodeState, position):
-        # newNodeState = list(nodeState) #Copy nodeState list into newNodeState list, nodeState is node.state
-        i = nodeState.index(0) #Find the position of 0 in the list
+        newNodeState = list(nodeState) #Copy nodeState list into newNodeState list, nodeState is node.state
+        i = newNodeState.index(0) #Find the position of 0 in the list
 
         if position == 1:  #Up
             #if i is not found from 0 to 2 i.e. the top row, then can move up
             if i not in range(boardSide):
-                temp = nodeState[i - boardSide]
-                nodeState[i - boardSide] = nodeState[i]
-                nodeState[i] = temp
-                return nodeState
+                temp = newNodeState[i - boardSide]
+                newNodeState[i - boardSide] = newNodeState[i]
+                newNodeState[i] = temp
+                return newNodeState
             else:
                 return None
 
         elif position == 2:  #Down
             #if i is not found from 6 to 8, i.e. bottom row, then can move down
             if i not in range(boardLen - boardSide, boardLen):
-                temp = nodeState[i + boardSide]
-                nodeState[i + boardSide] = nodeState[i]
-                nodeState[i] = temp
-                return nodeState
+                temp = newNodeState[i + boardSide]
+                newNodeState[i + boardSide] = newNodeState[i]
+                newNodeState[i] = temp
+                return newNodeState
             else:
                 return None
 
         elif position == 3:  #Left 
             #i not equal to 0, 3, 6, i.e. the leftmost row, then can move left
             if i not in range(0, boardLen, boardSide):
-                temp = nodeState[i - 1]
-                nodeState[i - 1] = nodeState[i]
-                nodeState[i] = temp
-                return nodeState
+                temp = newNodeState[i - 1]
+                newNodeState[i - 1] = newNodeState[i]
+                newNodeState[i] = temp
+                return newNodeState
             else:
                 return None
 
         elif position == 4:  #Right
             #i not equal to 2, 5, 8, i.e. the rightmost row, then can move right
             if i in range(boardSide - 1, boardLen, boardSide):
-                temp = nodeState[i + 1]
-                nodeState[i + 1] = nodeState[i]
-                nodeState[i] = temp
-                return nodeState
+                temp = newNodeState[i + 1]
+                newNodeState[i + 1] = newNodeState[i]
+                newNodeState[i] = temp
+                return newNodeState
             else:
                 return None
 
