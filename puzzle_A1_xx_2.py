@@ -39,7 +39,10 @@ class Puzzle(object):
         startNode = Node(init_state, list(), 0, self.heuristicFunction(init_state))
         heapq.heappush(self.frontierNodes, (startNode.fn, startNode))
         while True:
-            node = heapq.heappop(self.frontierNodes)[1]
+            try:
+                node = heapq.heappop(self.frontierNodes)[1]
+            except IndexError:
+                return ["UNSOLVABLE"]
             if node in self.exploredNodes:
                 continue
             print len(self.exploredNodes)
