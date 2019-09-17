@@ -15,6 +15,7 @@ class Node(object):
         self.action_history = action_history
         self.gn = gn
         self.hn = hn
+        self.fn = gn + hn
     
     def __eq__(self, other):
         return self.state == other.state
@@ -36,18 +37,19 @@ class Puzzle(object):
         # TODO: Write your code here
         # return: a list of actions like: ["UP", "DOWN"]
         startNode = Node(init_state, list(), 0, self.heuristicFunction(init_state))
-        heapq.heappush(self.frontierNodes, (self.heuristicFunction(startNode.state), startNode))
+        heapq.heappush(self.frontierNodes, (startNode.fn, startNode))
         while True:
-            print len(self.exploredNodes)
             node = heapq.heappop(self.frontierNodes)[1]
             if node in self.exploredNodes:
                 continue
+            print len(self.exploredNodes)
+            # print len(node.action_history)
             self.exploredNodes.add(node)
             if self.isGoalNode(node):
                 break
             new_frontier_nodes = self.generateFrontierNode(node)
             for frontier_node in new_frontier_nodes:
-                heapq.heappush(self.frontierNodes, (self.heuristicFunction(frontier_node.state), frontier_node))
+                heapq.heappush(self.frontierNodes, (frontier_node.fn, frontier_node))
         answer = []
         for directionNum in node.action_history:
             answer.append(moveNum[directionNum])
@@ -88,10 +90,6 @@ class Puzzle(object):
     # h3 = (h1 + h2)/2
     def heuristicFunction(self, state):
         return self.calcDistanceSum(state)
-
-    # Calculate f(n) = g(n) + h3(n)
-    def calc_fn(self, node):
-        return len(node.action_history) + self.heuristicFunction(node.state)
 
     # State-related methods
     def findPossibleMoves(self, state):
