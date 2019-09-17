@@ -3,17 +3,25 @@ import sys
 import copy
 import heapq
 
+MAX_DEPTH = 300
 moveNum = {1:"RIGHT", 2:"LEFT", 3:"UP", 4:"DOWN"}
 moveStr = {"RIGHT":1, "LEFT":2, "UP":3, "DOWN":4}
+
 
 class Node(object):
     def __init__(self, state, action_history, gn, hn):
         # You may add more attributes as necessary
-        self.state = state
+        self.state = tuple(tuple(row) for row in state)
         self.action_history = action_history
         self.gn = gn
         self.hn = hn
+    
+    def __eq__(self, other):
+        return self.state == other.state
 
+    def __hash__(self):
+        return hash(self.state)
+        
 class Puzzle(object):
     def __init__(self, init_state, goal_state):
         # You may add more attributes as necessary
@@ -21,21 +29,29 @@ class Puzzle(object):
         self.goal_state = goal_state
         self.actions = list()
         self.solvable = True
-        self.frontierNodes = heapq.heapify(list())
+        self.frontierNodes = []
+        self.exploredNodes = set()
 
     def solve(self):
         # TODO: Write your code here
         # return: a list of actions like: ["UP", "DOWN"]
         startNode = Node(init_state, list(), 0, self.heuristicFunction(init_state))
-        heapq.heappush(self.frontierNodes, startNode)
+        heapq.heappush(self.frontierNodes, (self.heuristicFunction(startNode.state), startNode))
         while True:
-            node = heapq.heappop(self.frontierNodes)
+            print len(self.exploredNodes)
+            node = heapq.heappop(self.frontierNodes)[1]
+            if node in self.exploredNodes:
+                continue
+            self.exploredNodes.add(node)
             if self.isGoalNode(node):
                 break
             new_frontier_nodes = self.generateFrontierNode(node)
             for frontier_node in new_frontier_nodes:
-                heapq.heappush(self.frontierNodes, frontier_node)
-        return node.action_history
+                heapq.heappush(self.frontierNodes, (self.heuristicFunction(frontier_node.state), frontier_node))
+        answer = []
+        for directionNum in node.action_history:
+            answer.append(moveNum[directionNum])
+        return answer
             
     # h1 heuristic: number of misplaced tiles
     def calcNumMisplacedTiles(self, curr_state):
@@ -71,7 +87,7 @@ class Puzzle(object):
 
     # h3 = (h1 + h2)/2
     def heuristicFunction(self, state):
-        return (self.calcDistanceSum(state) + self.calcNumMisplacedTiles(state)) / 2
+        return self.calcDistanceSum(state)
 
     # Calculate f(n) = g(n) + h3(n)
     def calc_fn(self, node):
@@ -110,6 +126,8 @@ class Puzzle(object):
         return self.calcNumMisplacedTiles(node.state) == 0
 
     def generateFrontierNode(self, node):
+        if len(node.action_history) > MAX_DEPTH:
+            return []
         possibleMoves = self.findPossibleMoves(node.state)
         frontierNodes = list()
         for move in possibleMoves:
@@ -123,7 +141,8 @@ class Puzzle(object):
 
     def getNextState(self, state, move):
         indexOfZero = self.getIndex(0, state)
-        nextState = copy.deepcopy(state)
+        copyOfState = copy.deepcopy(state)
+        nextState = [ list(row) for row in copyOfState ]
         if(move == moveStr["RIGHT"]):
             nextState[indexOfZero[0]][indexOfZero[1]] = nextState[indexOfZero[0]][indexOfZero[1] - 1]
             nextState[indexOfZero[0]][indexOfZero[1] - 1] = 0
@@ -136,7 +155,7 @@ class Puzzle(object):
         else:
             nextState[indexOfZero[0]][indexOfZero[1]] = nextState[indexOfZero[0] + 1][indexOfZero[1]]
             nextState[indexOfZero[0] + 1][indexOfZero[1]] = 0
-        return nextState
+        return tuple(nextState)
 
     # You may add more (helper) methods if necessary.
     # Note that our evaluation scripts only call the solve method.
@@ -173,6 +192,6 @@ if __name__ == "__main__":
     puzzle = Puzzle(init_state, goal_state)
     ans = puzzle.solve()
 
-    with open(sys.argv[2], 'a') as f:
+    with open(sys.argv[2], 'w') as f:
         for answer in ans:
             f.write(answer+'\n')
