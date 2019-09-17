@@ -24,6 +24,8 @@ initialState = list()
 goalState = list()
 boardSide = 3 #Number of elements in each row
 boardLen = 9 #Total number of elements
+actions = list()
+count = 0 #To keep track of number of steps done. If greater than 300, unsolvable
 
 class Puzzle(object):
     def __init__(self, init_state, goal_state):
@@ -32,7 +34,7 @@ class Puzzle(object):
         self.actions = list()
        
     def breadthFirstSearch(self, init_state):
-        global maxFrontierSize, goalNode
+        global maxFrontierSize, goalNode, count
 
         #Transfer the data from 2D array to list
         #because easier to deal with list than 2D array
@@ -41,17 +43,13 @@ class Puzzle(object):
                 initialState.append(init_state[i][j])
                 goalState.append(goal_state[i][j])
 
-        # explored = set()
         explored = deque()
-        # explored = list()
         queue = deque([NodeAttributes(initialState, None, None)])
 
         while queue:
             node = queue.popleft() #Remove and return an element (node) from the left side of the deque
             if node not in explored:
-                # explored.insert(0, node)
                 explored.appendleft(node)
-            # explored.add(node)
 
             if node.state == goalState:
                 goalNode = node
@@ -63,11 +61,12 @@ class Puzzle(object):
             for neighbour in neighbours:
                 if neighbour not in explored:
                     queue.append(neighbour)
-                    # explored.insert(0, neighbour)
                     explored.appendleft(neighbour)
-                    # explored.add(neighbour)
+                    count = count + 1
+                    if count > 300:
+                        actions.insert(0, "Unsolvable")
+                        return actions
                     
-
             if len(queue) > maxFrontierSize:
                 maxFrontierSize = len(queue)
 
@@ -92,45 +91,53 @@ class Puzzle(object):
     #depending on the position passed from expanding the node.
     #Move accordingly and update the newNodeState list
     def move(self, nodeState, position):
-        newNodeState = copy.copy(nodeState) #Copy nodeState list into newNodeState list, nodeState is node.state
+        newNodeState = copy.deepcopy(nodeState) #Copy nodeState list into newNodeState list, nodeState is node.state
         i = newNodeState.index(0) #Find the position of 0 in the list
 
-        if position == 1:  #Up
+        if position == 1:  #Up range(boardSide)
             #if i is not found from 0 to 2 i.e. the top row, then can move up
-            if i not in range(boardSide):
+            if i not in [0, 1 , 2]:
                 temp = newNodeState[i - boardSide]
                 newNodeState[i - boardSide] = newNodeState[i]
                 newNodeState[i] = temp
+                print "New Node State: ", newNodeState
+                print
                 return newNodeState
             else:
                 return None
 
-        elif position == 2:  #Down
+        if position == 2:  #Down range(boardLen - boardSide, boardLen)
             #if i is not found from 6 to 8, i.e. bottom row, then can move down
-            if i not in range(boardLen - boardSide, boardLen):
+            if i not in [6, 7, 8]:
                 temp = newNodeState[i + boardSide]
                 newNodeState[i + boardSide] = newNodeState[i]
                 newNodeState[i] = temp
+                print "New Node State: ", newNodeState
+                print
                 return newNodeState
             else:
                 return None
 
-        elif position == 3:  #Left 
-            #i not equal to 0, 3, 6, i.e. the leftmost row, then can move left
-            if i not in range(0, boardLen, boardSide):
+        if position == 3:  #Left
+            #i not found in 0, 3, 6, i.e. the leftmost row, then can move left
+            if i not in [0, 3, 6]:
                 temp = newNodeState[i - 1]
                 newNodeState[i - 1] = newNodeState[i]
                 newNodeState[i] = temp
+                print "New Node State: ", newNodeState
+                print
                 return newNodeState
             else:
                 return None
 
-        elif position == 4:  #Right
-            #i not equal to 2, 5, 8, i.e. the rightmost row, then can move right
-            if i in range(boardSide - 1, boardLen, boardSide):
+        if position == 4:  #Right
+            #i not found in 2, 5, 8, i.e. the rightmost row, then can move right
+            if i not in [2, 5, 8]:
                 temp = newNodeState[i + 1]
                 newNodeState[i + 1] = newNodeState[i]
                 newNodeState[i] = temp
+                print "New Node State: ", newNodeState
+                print
                 return newNodeState
             else:
                 return None
@@ -139,27 +146,28 @@ class Puzzle(object):
     #after it is known that goal_state can be reached
     def backtrack(self):
         currentNode = goalNode
-        actions = list()
+        if 'Unsolvable' in actions:
+            return actions
+        else:    
+            while initialState != currentNode.state:
+                if currentNode.move == 1:
+                    movement = 'Up'
+                elif currentNode.move == 2:
+                    movement = 'Down'
+                elif currentNode.move == 3:
+                    movement = 'Left'
+                else:
+                    movement = 'Right'
 
-        while initialState != currentNode.state:
-            if currentNode.move == 1:
-                movement = 'Up'
-            elif currentNode.move == 2:
-                movement = 'Down'
-            elif currentNode.move == 3:
-                movement = 'Left'
-            else:
-                movement = 'Right'
+                actions.insert(0, movement) #insert the movement at the front of the actions list
 
-            actions.insert(0, movement) #insert the movement at the front of the actions list
+                if(len(actions) > 300): #if the number of actions goes more than 300, unsolvable
+                    actions.clear()
+                    movement = "Unsolvable"
+                    actions.insert(0, movement)
+                    return actions
 
-            if(len(actions) > 300): #if the number of actions goes more than 300, unsolvable
-                actions.clear()
-                movement = "Unsolvable"
-                actions.insert(0, movement)
-                return actions
-
-            currentNode = currentNode.parent
+                currentNode = currentNode.parent
 
         return actions
 
