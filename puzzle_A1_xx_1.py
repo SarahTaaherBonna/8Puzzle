@@ -186,7 +186,7 @@ class Puzzle(object):
 
 if __name__ == "__main__":
     # do NOT modify below
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 3: # change to 5 to print nodesGenerated and maxFrontierSize
         raise ValueError("Wrong number of arguments!")
 
     try:
@@ -218,3 +218,9 @@ if __name__ == "__main__":
     with open(sys.argv[2], 'a') as f:
         for answer in ans:
             f.write(answer+'\n')
+        
+    # with open(sys.argv[3], 'a') as f:
+    #     f.write(str(nodesGenerated)+'\n')
+
+    # with open(sys.argv[4], 'a') as f:
+    #     f.write(str(maxFrontierSize)+'\n')
