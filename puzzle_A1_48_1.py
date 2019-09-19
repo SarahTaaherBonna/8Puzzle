@@ -20,7 +20,7 @@ class NodeAttributes:
         return hash(self.state)
 
 #Global variables to be used
-goalNode = NodeAttributes
+goalNode = None
 nodesGenerated = 0 #For report
 maxFrontierSize = 0 #For report
 initialState = list()
@@ -168,6 +168,8 @@ class Puzzle(object):
 
     def solve(self):
         self.breadthFirstSearch(init_state)
+        if not goalNode:
+            return ["UNSOLVABLE"]
         actions = self.backtrack()
         return actions
         # TODO: Write your code here
