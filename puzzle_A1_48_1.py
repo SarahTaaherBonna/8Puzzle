@@ -27,7 +27,6 @@ initialState = list()
 boardSide = 3 #Number of elements in each row
 boardLen = 9 #Total number of elements
 actions = list()
-count = 0 #To keep track of number of steps done. If greater than 300, unsolvable
 
 class Puzzle(object):
     def __init__(self, init_state, goal_state):
@@ -55,7 +54,6 @@ class Puzzle(object):
 
         while queue:
             node = queue.popleft() #Remove and return an element (node) from the left side of the deque  
-            print len(explored)
 
             if node.state == self.transformedGoalState:
                 goalNode = node
@@ -81,7 +79,7 @@ class Puzzle(object):
         for i in range(1, 5):
             newState = self.move(node.state, i)
             if newState:
-                neighbours.append(NodeAttributes(newState, node, i)) #Move up
+                neighbours.append(NodeAttributes(newState, node, i))
 
         return neighbours
 
@@ -92,7 +90,7 @@ class Puzzle(object):
         newNodeState = list(copy.deepcopy(nodeState)) #Copy nodeState list into newNodeState list, nodeState is node.state
         i = newNodeState.index(0) #Find the position of 0 in the list
 
-        if position == 1:  #Up range(boardSide)
+        if position == 1:  #Up 
             #if i is not found from 0 to 2 i.e. the top row, then can move up
             if i not in [0, 1 , 2]:
                 temp = newNodeState[i - boardSide]
@@ -104,7 +102,7 @@ class Puzzle(object):
             else:
                 return None
 
-        if position == 2:  #Down range(boardLen - boardSide, boardLen)
+        if position == 2:  #Down 
             #if i is not found from 6 to 8, i.e. bottom row, then can move down
             if i not in [6, 7, 8]:
                 temp = newNodeState[i + boardSide]
@@ -158,7 +156,7 @@ class Puzzle(object):
 
             if(len(actions) > 300): #if the number of actions goes more than 300, unsolvable
                 actions.clear()
-                movement = "Unsolvable"
+                movement = "UNSOLVABLE"
                 actions.insert(0, movement)
                 return actions
 
@@ -171,6 +169,7 @@ class Puzzle(object):
         if not goalNode:
             return ["UNSOLVABLE"]
         actions = self.backtrack()
+        actions.pop(0)
         return actions
         # TODO: Write your code here
         # return: a list of actions like: ["UP", "DOWN"]
