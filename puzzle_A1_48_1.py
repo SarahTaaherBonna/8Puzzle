@@ -24,7 +24,6 @@ goalNode = NodeAttributes
 nodesGenerated = 0 #For report
 maxFrontierSize = 0 #For report
 initialState = list()
-goalState = list()
 boardSide = 3 #Number of elements in each row
 boardLen = 9 #Total number of elements
 actions = list()
@@ -34,6 +33,7 @@ class Puzzle(object):
     def __init__(self, init_state, goal_state):
         self.init_state = init_state
         self.goal_state = goal_state
+        self.transformedGoalState = list()
         self.actions = list()
        
     def breadthFirstSearch(self, init_state):
@@ -44,8 +44,10 @@ class Puzzle(object):
         for i in range(boardSide):
             for j in range(boardSide):
                 initialState.append(init_state[i][j])
-                goalState.append(goal_state[i][j])
+                self.transformedGoalState.append(goal_state[i][j])
 
+        self.transformedGoalState = tuple(self.transformedGoalState)
+                
         explored = set()
         initialNode = NodeAttributes(initialState, None, None)
         queue = deque([initialNode])
@@ -55,7 +57,7 @@ class Puzzle(object):
             node = queue.popleft() #Remove and return an element (node) from the left side of the deque  
             print len(explored)
 
-            if node.state == goalState:
+            if node.state == self.transformedGoalState:
                 goalNode = node
                 return queue
 
@@ -142,7 +144,7 @@ class Puzzle(object):
     #after it is known that goal_state can be reached
     def backtrack(self):
         currentNode = goalNode
-        while initialState != currentNode.state:
+        while currentNode and (initialState != currentNode.state):
             if currentNode.move == 1:
                 movement = 'Up'
             elif currentNode.move == 2:
