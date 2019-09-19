@@ -2,7 +2,6 @@ import os
 import sys
 from collections import deque
 import copy
-import math
 
 #Attributes of each tile (node)
 class NodeAttributes:
