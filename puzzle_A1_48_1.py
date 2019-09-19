@@ -7,15 +7,18 @@ import math
 #Attributes of each tile (node)
 class NodeAttributes:
     def __init__(self, state, parent, move):
-        self.state = state #Initially initalState
+        self.state = tuple(state) #Initially initalState
         self.parent = parent #Initially None
         self.move = move #Initially None
 
-    def _eq_(self, other):
+    def __eq__(self, other):
         return self.state == other.state
 
-    def _lt_(self, other):
+    def __lt__(self, other):
         return self.state < other.state
+
+    def __hash__(self):
+        return hash(self.state)
 
 #Global variables to be used
 goalNode = NodeAttributes
@@ -44,13 +47,14 @@ class Puzzle(object):
                 initialState.append(init_state[i][j])
                 goalState.append(goal_state[i][j])
 
-        explored = deque()
-        queue = deque([NodeAttributes(initialState, None, None)])
+        explored = set()
+        initialNode = NodeAttributes(initialState, None, None)
+        queue = deque([initialNode])
+        explored.add(initialNode)
 
         while queue:
-            node = queue.popleft() #Remove and return an element (node) from the left side of the deque
-            if node not in explored:
-                explored.appendleft(node)
+            node = queue.popleft() #Remove and return an element (node) from the left side of the deque  
+            print len(explored)
 
             if node.state == goalState:
                 goalNode = node
@@ -62,7 +66,7 @@ class Puzzle(object):
             for neighbour in neighbours:
                 if neighbour not in explored:
                     queue.append(neighbour)
-                    explored.appendleft(neighbour)
+                    explored.add(neighbour)
                     
             if len(queue) > maxFrontierSize:
                 maxFrontierSize = len(queue)
@@ -73,22 +77,18 @@ class Puzzle(object):
         nodesGenerated += 1
         neighbours = list()
 
-        neighbours.append(NodeAttributes(self.move(node.state, 1), node, 1)) #Move up
-        neighbours.append(NodeAttributes(self.move(node.state, 2), node, 2)) #Move down
-        neighbours.append(NodeAttributes(self.move(node.state, 3), node, 3)) #Move left
-        neighbours.append(NodeAttributes(self.move(node.state, 4), node, 4)) #Move right
+        for i in range(1, 5):
+            newState = self.move(node.state, i)
+            if newState:
+                neighbours.append(NodeAttributes(newState, node, i)) #Move up
 
-        #Recursively find all the neighbours of the neighbours of the current neighbour
-        #and store these in nodes
-        nodes = [neighbour for neighbour in neighbours if neighbour.state] 
-
-        return nodes
+        return neighbours
 
     #Move to check whether to move up, down, left or right
     #depending on the position passed from expanding the node.
     #Move accordingly and update the newNodeState list
     def move(self, nodeState, position):
-        newNodeState = copy.deepcopy(nodeState) #Copy nodeState list into newNodeState list, nodeState is node.state
+        newNodeState = list(copy.deepcopy(nodeState)) #Copy nodeState list into newNodeState list, nodeState is node.state
         i = newNodeState.index(0) #Find the position of 0 in the list
 
         if position == 1:  #Up range(boardSide)
