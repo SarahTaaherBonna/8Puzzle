@@ -2,6 +2,7 @@ import os
 import sys
 from collections import deque
 import copy
+import math
 
 #Attributes of each tile (node)
 class NodeAttributes:
@@ -59,10 +60,6 @@ class Puzzle(object):
             neighbours = self.expand(node) 
 
             for neighbour in neighbours:
-                 count = count + 1
-                if count > 300:
-                    actions.insert(0, "Unsolvable")
-                    return actions
                 if neighbour not in explored:
                     queue.append(neighbour)
                     explored.appendleft(neighbour)
@@ -146,28 +143,25 @@ class Puzzle(object):
     #after it is known that goal_state can be reached
     def backtrack(self):
         currentNode = goalNode
-        if 'Unsolvable' in actions:
-            return actions
-        else:    
-            while initialState != currentNode.state:
-                if currentNode.move == 1:
-                    movement = 'Up'
-                elif currentNode.move == 2:
-                    movement = 'Down'
-                elif currentNode.move == 3:
-                    movement = 'Left'
-                else:
-                    movement = 'Right'
+        while initialState != currentNode.state:
+            if currentNode.move == 1:
+                movement = 'Up'
+            elif currentNode.move == 2:
+                movement = 'Down'
+            elif currentNode.move == 3:
+                movement = 'Left'
+            else:
+                movement = 'Right'
 
-                actions.insert(0, movement) #insert the movement at the front of the actions list
+            actions.insert(0, movement) #insert the movement at the front of the actions list
 
-                if(len(actions) > 300): #if the number of actions goes more than 300, unsolvable
-                    actions.clear()
-                    movement = "Unsolvable"
-                    actions.insert(0, movement)
-                    return actions
+            if(len(actions) > 300): #if the number of actions goes more than 300, unsolvable
+                actions.clear()
+                movement = "Unsolvable"
+                actions.insert(0, movement)
+                return actions
 
-                currentNode = currentNode.parent
+            currentNode = currentNode.parent
 
         return actions
 
