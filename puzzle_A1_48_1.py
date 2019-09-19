@@ -59,13 +59,13 @@ class Puzzle(object):
             neighbours = self.expand(node) 
 
             for neighbour in neighbours:
+                 count = count + 1
+                if count > 300:
+                    actions.insert(0, "Unsolvable")
+                    return actions
                 if neighbour not in explored:
                     queue.append(neighbour)
                     explored.appendleft(neighbour)
-                    count = count + 1
-                    if count > 300:
-                        actions.insert(0, "Unsolvable")
-                        return actions
                     
             if len(queue) > maxFrontierSize:
                 maxFrontierSize = len(queue)
@@ -94,22 +94,26 @@ class Puzzle(object):
         newNodeState = copy.deepcopy(nodeState) #Copy nodeState list into newNodeState list, nodeState is node.state
         i = newNodeState.index(0) #Find the position of 0 in the list
 
-        if position == 1:  #Up 
+        if position == 1:  #Up range(boardSide)
             #if i is not found from 0 to 2 i.e. the top row, then can move up
             if i not in [0, 1 , 2]:
                 temp = newNodeState[i - boardSide]
                 newNodeState[i - boardSide] = newNodeState[i]
                 newNodeState[i] = temp
+                # print "New Node State: ", newNodeState
+                # print
                 return newNodeState
             else:
                 return None
 
-        if position == 2:  #Down
+        if position == 2:  #Down range(boardLen - boardSide, boardLen)
             #if i is not found from 6 to 8, i.e. bottom row, then can move down
             if i not in [6, 7, 8]:
                 temp = newNodeState[i + boardSide]
                 newNodeState[i + boardSide] = newNodeState[i]
                 newNodeState[i] = temp
+                # print "New Node State: ", newNodeState
+                # print
                 return newNodeState
             else:
                 return None
@@ -120,6 +124,8 @@ class Puzzle(object):
                 temp = newNodeState[i - 1]
                 newNodeState[i - 1] = newNodeState[i]
                 newNodeState[i] = temp
+                # print "New Node State: ", newNodeState
+                # print
                 return newNodeState
             else:
                 return None
@@ -130,6 +136,8 @@ class Puzzle(object):
                 temp = newNodeState[i + 1]
                 newNodeState[i + 1] = newNodeState[i]
                 newNodeState[i] = temp
+                # print "New Node State: ", newNodeState
+                # print
                 return newNodeState
             else:
                 return None
