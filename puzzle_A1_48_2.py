@@ -32,6 +32,8 @@ class Puzzle(object):
         self.solvable = True
         self.frontierNodes = []
         self.exploredNodes = set()
+        self.numberOfGeneratedNodes = 0
+        self.maxSizeOfFrontierNodes = 0
 
     def solve(self):
         # TODO: Write your code here
@@ -45,31 +47,31 @@ class Puzzle(object):
                 return ["UNSOLVABLE"]
             if node in self.exploredNodes:
                 continue
-            print len(self.exploredNodes)
-            # print len(node.action_history)
             self.exploredNodes.add(node)
             if self.isGoalNode(node):
                 break
             new_frontier_nodes = self.generateFrontierNode(node)
             for frontier_node in new_frontier_nodes:
                 heapq.heappush(self.frontierNodes, (frontier_node.fn, frontier_node))
+            if self.maxSizeOfFrontierNodes < len(self.frontierNodes):
+                self.maxSizeOfFrontierNodes = len(self.frontierNodes)
         answer = []
         for directionNum in node.action_history:
             answer.append(moveNum[directionNum])
         return answer
             
-    # h1 heuristic: number of misplaced tiles
-    def calcNumMisplacedTiles(self, curr_state):
-        num = 1
-        numMisplaced = 0
-        for i in range(3):
-            for j in range(3):
-                if (curr_state[i][j] != num):
-                    numMisplaced += 1
-                num +=1
-        if (curr_state[2][2] == 0):
-            numMisplaced -= 1
-        return numMisplaced
+    # # h1 heuristic: number of misplaced tiles
+    # def calcNumMisplacedTiles(self, curr_state):
+    #     num = 1
+    #     numMisplaced = 0
+    #     for i in range(3):
+    #         for j in range(3):
+    #             if (curr_state[i][j] != num):
+    #                 numMisplaced += 1
+    #             num +=1
+    #     if (curr_state[2][2] == 0):
+    #         numMisplaced -= 1
+    #     return numMisplaced
 
     # h2 heuristic: total Manhattan-Distance
     def calcDistanceSum(self, state):
@@ -90,7 +92,6 @@ class Puzzle(object):
                 if elem == number:
                     return (idxOuter, idxInner)
 
-    # h3 = (h1 + h2)/2
     def heuristicFunction(self, state):
         return self.calcDistanceSum(state)
 
@@ -124,7 +125,7 @@ class Puzzle(object):
         return moves
 
     def isGoalNode(self, node):
-        return self.calcNumMisplacedTiles(node.state) == 0
+        return self.calcDistanceSum(node.state) == 0
 
     def generateFrontierNode(self, node):
         if len(node.action_history) > MAX_DEPTH:
@@ -136,6 +137,7 @@ class Puzzle(object):
             newActionHistory = node.action_history[:]
             newActionHistory.append(move)
             newNode = Node(newState, newActionHistory, len(newActionHistory), self.heuristicFunction(newState))
+            self.numberOfGeneratedNodes += 1
             frontierNodes.append(newNode)
         return frontierNodes
 
@@ -192,6 +194,8 @@ if __name__ == "__main__":
 
     puzzle = Puzzle(init_state, goal_state)
     ans = puzzle.solve()
+    print "Number of generated nodes: " + str(puzzle.numberOfGeneratedNodes)
+    print "Max frontier node size: " + str(puzzle.maxSizeOfFrontierNodes)
 
     with open(sys.argv[2], 'w') as f:
         for answer in ans:
