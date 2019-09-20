@@ -73,8 +73,6 @@ class Puzzle(object):
 
     #Expand the node to visit its neighbours, and call move function
     def expand(self, node):
-        # global nodesGenerated
-        # nodesGenerated += 1
         neighbours = list()
 
         for i in range(1, 5):
@@ -97,8 +95,6 @@ class Puzzle(object):
                 temp = newNodeState[i - boardSide]
                 newNodeState[i - boardSide] = newNodeState[i]
                 newNodeState[i] = temp
-                # print "New Node State: ", newNodeState
-                # print
                 return newNodeState
             else:
                 return None
@@ -109,8 +105,6 @@ class Puzzle(object):
                 temp = newNodeState[i + boardSide]
                 newNodeState[i + boardSide] = newNodeState[i]
                 newNodeState[i] = temp
-                # print "New Node State: ", newNodeState
-                # print
                 return newNodeState
             else:
                 return None
@@ -121,8 +115,6 @@ class Puzzle(object):
                 temp = newNodeState[i - 1]
                 newNodeState[i - 1] = newNodeState[i]
                 newNodeState[i] = temp
-                # print "New Node State: ", newNodeState
-                # print
                 return newNodeState
             else:
                 return None
@@ -133,8 +125,6 @@ class Puzzle(object):
                 temp = newNodeState[i + 1]
                 newNodeState[i + 1] = newNodeState[i]
                 newNodeState[i] = temp
-                # print "New Node State: ", newNodeState
-                # print
                 return newNodeState
             else:
                 return None
