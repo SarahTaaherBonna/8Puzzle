@@ -1,3 +1,10 @@
+"""
+Group 48
+Benn Tay Guobin (A0167647N)
+Chong Chee Yuan (A0182546Y)
+Sarah Taaher Bonna (A0171268B)
+"""
+
 import os
 import sys
 from collections import deque
