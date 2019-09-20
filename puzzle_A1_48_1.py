@@ -36,7 +36,7 @@ class Puzzle(object):
         self.actions = list()
        
     def breadthFirstSearch(self, init_state):
-        global maxFrontierSize, goalNode, count
+        global maxFrontierSize, goalNode, nodesGenerated
 
         #Transfer the data from 2D array to list
         #because easier to deal with list than 2D array
@@ -63,6 +63,7 @@ class Puzzle(object):
             neighbours = self.expand(node) 
 
             for neighbour in neighbours:
+                nodesGenerated += 1
                 if neighbour not in explored:
                     queue.append(neighbour)
                     explored.add(neighbour)
@@ -72,8 +73,8 @@ class Puzzle(object):
 
     #Expand the node to visit its neighbours, and call move function
     def expand(self, node):
-        global nodesGenerated
-        nodesGenerated += 1
+        # global nodesGenerated
+        # nodesGenerated += 1
         neighbours = list()
 
         for i in range(1, 5):
@@ -215,8 +216,8 @@ if __name__ == "__main__":
         for answer in ans:
             f.write(answer+'\n')
         
-    # with open(sys.argv[3], 'a') as f:
-    #     f.write(str(nodesGenerated)+'\n')
+    #with open(sys.argv[3], 'a') as f:
+        #f.write(str(nodesGenerated)+'\n')
 
-    # with open(sys.argv[4], 'a') as f:
-    #     f.write(str(maxFrontierSize)+'\n')
+    #with open(sys.argv[4], 'a') as f:
+        #f.write(str(maxFrontierSize)+'\n')
