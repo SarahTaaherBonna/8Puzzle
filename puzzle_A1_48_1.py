@@ -169,18 +169,11 @@ class Puzzle(object):
         actions = self.backtrack()
         actions.pop(0)
         return actions
-        # TODO: Write your code here
         # return: a list of actions like: ["UP", "DOWN"]
-        #pass
-
-    # You may add more (helper) methods if necessary.
-    # Note that our evaluation scripts only call the solve method.
-    # Any other methods that you write should be used within the solve() method.
-
-
+        
 if __name__ == "__main__":
     # do NOT modify below
-    if len(sys.argv) != 3: # change to 5 to print nodesGenerated and maxFrontierSize
+    if len(sys.argv) != 3:
         raise ValueError("Wrong number of arguments!")
 
     try:
@@ -212,9 +205,4 @@ if __name__ == "__main__":
     with open(sys.argv[2], 'a') as f:
         for answer in ans:
             f.write(answer+'\n')
-        
-    #with open(sys.argv[3], 'a') as f:
-        #f.write(str(nodesGenerated)+'\n')
 
-    #with open(sys.argv[4], 'a') as f:
-        #f.write(str(maxFrontierSize)+'\n')

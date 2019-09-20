@@ -17,7 +17,6 @@ moveStr = {"RIGHT":1, "LEFT":2, "UP":3, "DOWN":4}
 
 class Node(object):
     def __init__(self, state, action_history, gn, hn):
-        # You may add more attributes as necessary
         self.state = tuple(tuple(row) for row in state)
         self.action_history = action_history
         self.gn = gn
@@ -32,7 +31,6 @@ class Node(object):
         
 class Puzzle(object):
     def __init__(self, init_state, goal_state):
-        # You may add more attributes as necessary
         self.init_state = init_state
         self.goal_state = goal_state
         self.actions = list()
@@ -43,7 +41,6 @@ class Puzzle(object):
         self.maxSizeOfFrontierNodes = 0
 
     def solve(self):
-        # TODO: Write your code here
         # return: a list of actions like: ["UP", "DOWN"]
         startNode = Node(init_state, list(), 0, self.heuristicFunction(init_state))
         heapq.heappush(self.frontierNodes, (startNode.fn, startNode))
@@ -66,19 +63,6 @@ class Puzzle(object):
         for directionNum in node.action_history:
             answer.append(moveNum[directionNum])
         return answer
-            
-    # # h1 heuristic: number of misplaced tiles
-    # def calcNumMisplacedTiles(self, curr_state):
-    #     num = 1
-    #     numMisplaced = 0
-    #     for i in range(3):
-    #         for j in range(3):
-    #             if (curr_state[i][j] != num):
-    #                 numMisplaced += 1
-    #             num +=1
-    #     if (curr_state[2][2] == 0):
-    #         numMisplaced -= 1
-    #     return numMisplaced
 
     # h2 heuristic: total Manhattan-Distance
     def calcDistanceSum(self, state):
@@ -167,10 +151,6 @@ class Puzzle(object):
             nextState[indexOfZero[0] + 1][indexOfZero[1]] = 0
         return tuple(nextState)
 
-    # You may add more (helper) methods if necessary.
-    # Note that our evaluation scripts only call the solve method.
-    # Any other methods that you write should be used within the solve() method.
-
 if __name__ == "__main__":
     # do NOT modify below
     if len(sys.argv) != 3:
@@ -201,9 +181,7 @@ if __name__ == "__main__":
 
     puzzle = Puzzle(init_state, goal_state)
     ans = puzzle.solve()
-    print "Number of generated nodes: " + str(puzzle.numberOfGeneratedNodes)
-    print "Max frontier node size: " + str(puzzle.maxSizeOfFrontierNodes)
 
-    with open(sys.argv[2], 'w') as f:
+    with open(sys.argv[2], 'a') as f:
         for answer in ans:
             f.write(answer+'\n')
