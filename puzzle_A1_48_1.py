@@ -176,7 +176,7 @@ class Puzzle(object):
 
 if __name__ == "__main__":
     # do NOT modify below
-    if len(sys.argv) != 3: # change to 5 to print nodesGenerated and maxFrontierSize
+    if len(sys.argv) != 3:
         raise ValueError("Wrong number of arguments!")
 
     try:
