@@ -96,8 +96,7 @@ class Puzzle(object):
         newNodeState = list(copy.deepcopy(nodeState)) #Copy nodeState list into newNodeState list, nodeState is node.state
         i = newNodeState.index(0) #Find the position of 0 in the list
 
-        if position == 1:  #Up 
-            #if i is not found from 0 to 2 i.e. the top row, then can move up
+        if position == 1:  #Down 
             if i not in [0, 1 , 2]:
                 temp = newNodeState[i - boardSide]
                 newNodeState[i - boardSide] = newNodeState[i]
@@ -106,8 +105,7 @@ class Puzzle(object):
             else:
                 return None
 
-        if position == 2:  #Down 
-            #if i is not found from 6 to 8, i.e. bottom row, then can move down
+        if position == 2:  #Up 
             if i not in [6, 7, 8]:
                 temp = newNodeState[i + boardSide]
                 newNodeState[i + boardSide] = newNodeState[i]
@@ -116,8 +114,7 @@ class Puzzle(object):
             else:
                 return None
 
-        if position == 3:  #Left
-            #i not found in 0, 3, 6, i.e. the leftmost row, then can move left
+        if position == 3:  #Right (from tile's perspective)
             if i not in [0, 3, 6]:
                 temp = newNodeState[i - 1]
                 newNodeState[i - 1] = newNodeState[i]
@@ -126,8 +123,7 @@ class Puzzle(object):
             else:
                 return None
 
-        if position == 4:  #Right
-            #i not found in 2, 5, 8, i.e. the rightmost row, then can move right
+        if position == 4:  #Left (from tile's perspective)
             if i not in [2, 5, 8]:
                 temp = newNodeState[i + 1]
                 newNodeState[i + 1] = newNodeState[i]
@@ -142,13 +138,13 @@ class Puzzle(object):
         currentNode = goalNode
         while currentNode and (initialState != currentNode.state):
             if currentNode.move == 1:
-                movement = 'Up'
+                movement = "DOWN"
             elif currentNode.move == 2:
-                movement = 'Down'
+                movement = "UP"
             elif currentNode.move == 3:
-                movement = 'Left'
+                movement = "RIGHT"
             else:
-                movement = 'Right'
+                movement = "LEFT"
 
             actions.insert(0, movement) #insert the movement at the front of the actions list
 
@@ -169,11 +165,18 @@ class Puzzle(object):
         actions = self.backtrack()
         actions.pop(0)
         return actions
+        # TODO: Write your code here
         # return: a list of actions like: ["UP", "DOWN"]
-        
+        #pass
+
+    # You may add more (helper) methods if necessary.
+    # Note that our evaluation scripts only call the solve method.
+    # Any other methods that you write should be used within the solve() method.
+
+
 if __name__ == "__main__":
     # do NOT modify below
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 3: # change to 5 to print nodesGenerated and maxFrontierSize
         raise ValueError("Wrong number of arguments!")
 
     try:
@@ -205,4 +208,3 @@ if __name__ == "__main__":
     with open(sys.argv[2], 'a') as f:
         for answer in ans:
             f.write(answer+'\n')
-
